@@ -2,9 +2,15 @@ package com.demonews.demo_news_api_android.articles;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.demonews.demo_news_api_android.data.articles.ArticlesDataSource;
+import com.demonews.demo_news_api_android.data.articles.ArticlesRepository;
+import com.demonews.demo_news_api_android.data.articles.model.Article;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,10 +20,13 @@ import javax.inject.Inject;
 
 public class ArticlesPresenter implements ArticlesContract.Presenter {
 
+    private static final String TAG = ArticlesPresenter.class.getSimpleName();
+
 
     @NonNull
     private final ArticlesContract.View mView;
     private final Context mContext;
+    private final ArticlesRepository mArticlesRepository;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
@@ -25,9 +34,10 @@ public class ArticlesPresenter implements ArticlesContract.Presenter {
 
 
     @Inject
-    ArticlesPresenter(ArticlesContract.View view, Context context){
+    ArticlesPresenter(ArticlesContract.View view, Context context, ArticlesRepository articlesRepository){
         mView = view;
         mContext = context;
+        mArticlesRepository = articlesRepository;
     }
 
     /**
@@ -41,11 +51,28 @@ public class ArticlesPresenter implements ArticlesContract.Presenter {
     @Override
     public void start() {
         initiliazeFirebaseAuth();
+        showArticles();
     }
 
     @Override
     public void showArticles() {
 
+        mArticlesRepository.getArticles(new ArticlesDataSource.LoadArticlesCallback() {
+
+            @Override
+            public void onArticlesLoaded(List<Article> articles) {
+                Log.i(TAG, "onArticlesLoaded: ");
+//                for (Article article: articles) {
+//                    Log.d(TAG, "onArticlesLoaded: " + article.getTitle());
+//                }
+                mView.showArticlesOnLoaded(articles);
+            }
+
+            @Override
+            public void onArticlesNotLoaded() {
+                Log.d(TAG, "onArticlesNotLoaded: Articles not loaded");
+            }
+        });
     }
 
     @Override

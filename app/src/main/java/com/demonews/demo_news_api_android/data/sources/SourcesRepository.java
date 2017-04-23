@@ -3,6 +3,9 @@ package com.demonews.demo_news_api_android.data.sources;
 import android.support.annotation.NonNull;
 
 import com.demonews.demo_news_api_android.data.Remote;
+import com.demonews.demo_news_api_android.data.sources.models.Source;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,7 +24,17 @@ public class SourcesRepository implements SourcesDataSource{
     }
 
     @Override
-    public void getSources(@NonNull LoadSourcesCallback callback) {
+    public void getSources(@NonNull final LoadSourcesCallback callback) {
+       mSourcesRemoteDataSource.getSources(new LoadSourcesCallback() {
+           @Override
+           public void onSourcesLoaded(List<Source> sources) {
+               callback.onSourcesLoaded(sources);
+           }
 
+           @Override
+           public void onSourcesNotLoaded() {
+               callback.onSourcesNotLoaded();
+           }
+       });
     }
 }

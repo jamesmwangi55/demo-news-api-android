@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.demonews.demo_news_api_android">
 
-
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".DemoNewsApplication"
@@ -15,7 +15,6 @@
         <activity
             android:name=".auth.AuthenticationActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
         </activity>
         <activity android:name=".articles.ArticlesActivity">
             <intent-filter>
@@ -23,6 +22,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".sources.SourcesActivity">
         </activity>
     </application>
 

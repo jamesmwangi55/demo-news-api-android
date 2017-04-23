@@ -37,6 +37,7 @@ public class ArticlesActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
         ArticlesFragment articlesFragment =
@@ -50,7 +51,7 @@ public class ArticlesActivity extends AppCompatActivity {
 
         DaggerArticlesComponent.builder()
                 .articlesPresenterModule(new ArticlesPresenterModule(articlesFragment, this))
-                .sourcesRepositoryComponent(((DemoNewsApplication) getApplication()).getSourcesRepositoryComponent())
+                .articlesRepositoryComponent(((DemoNewsApplication)getApplication()).getArticlesRepositoryComponent())
                 .build()
                 .inject(this);
     }
