@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.demonews.demo_news_api_android.R;
@@ -27,6 +28,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -41,10 +43,12 @@ public class AuthenticationFragment extends Fragment implements AuthenticationCo
     private static final String TAG = AuthenticationFragment.class.getSimpleName();
 
     private AuthenticationContract.Presenter mPresenter;
+    @BindView(R.id.account)TextView mTextView;
 
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleApiClient mGoogleApiClient;
+
 
 
     private Unbinder mUnbinder;
@@ -76,6 +80,8 @@ public class AuthenticationFragment extends Fragment implements AuthenticationCo
                 .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+
 
     }
 
@@ -168,6 +174,11 @@ public class AuthenticationFragment extends Fragment implements AuthenticationCo
     public void showArticlesActivity() {
         startActivity(ArticlesActivity.newIntent(getActivity()));
         getActivity().finish();
+    }
+
+    @Override
+    public void showName(String name) {
+
     }
 
     @Override

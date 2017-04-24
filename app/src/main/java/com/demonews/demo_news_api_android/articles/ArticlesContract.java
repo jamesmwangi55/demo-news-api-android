@@ -29,7 +29,7 @@ public interface ArticlesContract {
     }
 
     interface Presenter extends BasePresenter{
-        void showArticles();
+        void showArticles(String source, String category);
         void initiliazeFirebaseAuth();
         void signOut();
     }

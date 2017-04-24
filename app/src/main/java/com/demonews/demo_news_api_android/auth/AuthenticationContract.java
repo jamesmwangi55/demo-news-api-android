@@ -13,10 +13,12 @@ public interface AuthenticationContract {
 
         void showAuthenticationFailed();
         void showArticlesActivity();
+        void showName(String name);
         boolean isActive();
     }
 
     interface Presenter extends BasePresenter{
         void firebaseAuthWithGoogleAccount(GoogleSignInAccount acct);
+        void getName();
     }
 }

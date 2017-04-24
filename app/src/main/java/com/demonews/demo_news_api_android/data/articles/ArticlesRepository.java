@@ -27,18 +27,18 @@ public class ArticlesRepository implements ArticlesDataSource {
     }
 
     @Override
-    public void getArticles(@NonNull final LoadArticlesCallback callback, String category, String source) {
-        mArticlesRemoteDataSource.getArticles(new LoadArticlesCallback() {
-            @Override
-            public void onArticlesLoaded(List<Article> articles) {
-                callback.onArticlesLoaded(articles);
-            }
+    public void getArticles( String category, String source, @NonNull final LoadArticlesCallback callback) {
+       mArticlesRemoteDataSource.getArticles(category, source, new LoadArticlesCallback() {
+           @Override
+           public void onArticlesLoaded(List<Article> articles) {
+               callback.onArticlesLoaded(articles);
+           }
 
-            @Override
-            public void onArticlesNotLoaded() {
+           @Override
+           public void onArticlesNotLoaded() {
                 callback.onArticlesNotLoaded();
-            }
-        });
+           }
+       });
     }
 
     @Override

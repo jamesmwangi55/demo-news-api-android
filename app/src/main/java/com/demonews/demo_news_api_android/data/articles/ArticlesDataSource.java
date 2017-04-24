@@ -17,6 +17,6 @@ public interface ArticlesDataSource {
         void onArticlesNotLoaded();
     }
 
-    void getArticles(@NonNull LoadArticlesCallback callback, String category, String source);
+    void getArticles(String category, String source, @NonNull LoadArticlesCallback callback);
     void getArticles(@NonNull LoadArticlesCallback callback);
 }

@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
 
     private static final String TAG = AuthenticationPresenter.class.getSimpleName();
     private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
 
     @NonNull
     private final AuthenticationContract.View mView;
@@ -73,6 +75,16 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
                         }
                     }
                 });
+    }
+
+    @Override
+    public void getName() {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if(mFirebaseUser != null){
+            mView.showName(mFirebaseUser.getDisplayName());
+        }
     }
 
 

@@ -6,6 +6,7 @@ import com.demonews.demo_news_api_android.data.articles.ArticlesRepositoryCompon
 import com.demonews.demo_news_api_android.data.articles.DaggerArticlesRepositoryComponent;
 import com.demonews.demo_news_api_android.data.sources.DaggerSourcesRepositoryComponent;
 import com.demonews.demo_news_api_android.data.sources.SourcesRepositoryComponent;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 /**
  * Created by james on 4/21/2017.
@@ -19,6 +20,8 @@ public class DemoNewsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Fresco.initialize(this);
 
         mSourcesRepositoryComponent = DaggerSourcesRepositoryComponent.builder()
                 .applicationModule(new ApplicationModule(getApplicationContext()))

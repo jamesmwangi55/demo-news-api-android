@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">News App</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_in">Sign In</string>
     <string name="google_play_service_error">Google Play Services error.</string>
@@ -15,4 +14,17 @@
     <string name="sources_loading_failed">Sources loading failed</string>
     <string name="action_articles">Articles</string>
     <string name="artiles_loading_failed">Articles loading failed</string>
+    <string name="technology">Technology</string>
+    <string name="general">General</string>
+    <string name="politics">Politics</string>
+    <string name="sports">Sports</string>
+    <string name="business">Business</string>
+    <string name="gaming">Gaming</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="music">Music</string>
+    <string name="science_and_nature">Science and Nature</string>
+    <string name="filter">Filter</string>
+    <string name="all">All</string>
+    <string name="sources">Sources</string>
+    <string name="account">Account</string>
 </resources>

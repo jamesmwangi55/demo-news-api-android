@@ -1,9 +1,13 @@
 package com.demonews.demo_news_api_android.articles;
 
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,25 +18,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.demonews.demo_news_api_android.DemoNewsApplication;
 import com.demonews.demo_news_api_android.R;
 import com.demonews.demo_news_api_android.auth.AuthenticationActivity;
+import com.demonews.demo_news_api_android.customtabs.CustomTabActivityHelper;
 import com.demonews.demo_news_api_android.data.articles.model.Article;
 import com.demonews.demo_news_api_android.data.sources.models.Source;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,12 +55,19 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
 
     private static final String TAG = ArticlesFragment.class.getSimpleName();
 
+    private static final String ARGS_CATEGORY = "category_extra";
+    private static final String ARGS_SOURCE = "source_extra";
+
     private ArticlesContract.Presenter mPresenter;
     private static final int RC_SIGN_IN = 9001;
+
+    @Inject
+    ArticlesPresenter mArticlesPresenter;
 
     @BindView(R.id.recylerView) RecyclerView mRecyclerView;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     private ArticleAdapter mArticleAdapter;
+    CustomTabsIntent mCustomTabsIntent = new CustomTabsIntent.Builder().build();
 
     private Unbinder mUnbinder;
 
@@ -61,6 +75,8 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
     private String mPhotoUrl;
     private GoogleApiClient mGoogleApiClient;
     public static final String ANONYMOUS = "anonymous";
+    private String mCategory;
+    private String mSource;
 
 
     public ArticlesFragment() {
@@ -76,6 +92,15 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
         return fragment;
     }
 
+    public static ArticlesFragment newInstance(String category, String source) {
+        Bundle args = new Bundle();
+        args.putString(ARGS_CATEGORY, category);
+        args.putString(ARGS_SOURCE, source);
+        ArticlesFragment fragment = new ArticlesFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,13 +108,37 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
         setRetainInstance(true);
         mUsername = ANONYMOUS;
 
+        if(savedInstanceState!=null){
+            mCategory = savedInstanceState.getString(ARGS_CATEGORY);
+            mSource = savedInstanceState.getString(ARGS_SOURCE);
+        } else {
+            mSource = getArguments().getString(ARGS_SOURCE);
+            mCategory = getArguments().getString(ARGS_CATEGORY);
+        }
+
+        DaggerArticlesComponent.builder()
+                .articlesPresenterModule(new ArticlesPresenterModule(this, getActivity()))
+                .articlesRepositoryComponent(((DemoNewsApplication)getActivity().getApplication()).getArticlesRepositoryComponent())
+                .build()
+                .inject(this);
+
 
         mArticleAdapter = new ArticleAdapter(new ArrayList<Article>(0));
 
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API)
-                .build();
+        if(mGoogleApiClient != null){
+            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                    .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API)
+                    .build();
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARGS_CATEGORY, mCategory);
+        outState.putString(ARGS_SOURCE, mSource);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -100,6 +149,10 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
 
         mUnbinder = ButterKnife.bind(this, view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setItemViewCacheSize(20);
+//        mRecyclerView.setDrawingCacheEnabled(true);
+//        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         return view;
     }
@@ -114,6 +167,9 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
     public void onResume() {
         super.onResume();
         mPresenter.start();
+        if(isAdded()){
+            mPresenter.showArticles(mSource, mCategory);
+        }
     }
 
     @Override
@@ -139,7 +195,10 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
 
     @Override
     public void showProgress(boolean show) {
-        mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        if(mProgressBar!=null){
+            mRecyclerView.setVisibility(show ? View.INVISIBLE : View.VISIBLE);
+            mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override
@@ -208,7 +267,6 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
 
     @Override
     public void showArticlesOnLoaded(List<Article> articles) {
-        Toast.makeText(getActivity(), "" + articles.size(), Toast.LENGTH_SHORT).show();
         if(isAdded()){
             mArticleAdapter.replaceData(articles);
             mRecyclerView.setAdapter(mArticleAdapter);
@@ -220,31 +278,46 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
         Toast.makeText(getActivity(), R.string.artiles_loading_failed, Toast.LENGTH_SHORT).show();
     }
 
-    class ArticleHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.imageView) ImageView mImageView;
+
+    class ArticleHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        @BindView(R.id.imageView) SimpleDraweeView mSimpleDraweeView;
         @BindView(R.id.title) TextView mTitleTextView;
         @BindView(R.id.category) TextView mCategoryTextView;
+        @BindView(R.id.source) TextView mSourceTextView;
+        private Article mArticle;
+
 
         public ArticleHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         public void bindArticle(Article article){
+            mArticle = article;
             if(article.getUrlToImage()!=null && !article.getUrlToImage().isEmpty()){
-                Picasso.with(getActivity())
-                        .load(article.getUrlToImage())
-                        .resize(200, 200)
-                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .into(mImageView);
+                Uri uri = Uri.parse(article.getUrlToImage());
+                mSimpleDraweeView.setImageURI(uri);
             }
 
             mTitleTextView.setText(article.getTitle());
             mCategoryTextView.setText(article.getCategory().substring(0, 1).toUpperCase() + article.getCategory().substring(1));
+            mSourceTextView.setText(article.getName());
         }
 
+        @Override
+        public void onClick(View v) {
+            Uri uri = Uri.parse(mArticle.getUrl());
+            CustomTabActivityHelper.openCustomTab(getActivity(), mCustomTabsIntent, uri, new CustomTabActivityHelper.CustomTabFallback() {
+                @Override
+                public void openUri(Activity activity, Uri uri) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    activity.startActivity(intent);
+                }
+            });
+        }
     }
 
     class ArticleAdapter extends RecyclerView.Adapter<ArticleHolder>{

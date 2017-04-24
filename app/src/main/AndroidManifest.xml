@@ -16,9 +16,10 @@
             android:name=".auth.AuthenticationActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
-        <activity android:name=".articles.ArticlesActivity"
-                  android:launchMode="singleTop"
-                  android:configChanges="orientation|screenSize">
+        <activity
+            android:name=".articles.ArticlesActivity"
+            android:configChanges="orientation|screenSize|navigation"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -26,6 +27,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".sources.SourcesActivity">
+        </activity>
+        <activity android:name=".articles.FilteredArticlesActivity"
+            android:parentActivityName=".sources.SourcesActivity">
         </activity>
     </application>
 

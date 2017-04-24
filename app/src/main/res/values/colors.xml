@@ -7,4 +7,5 @@
     <color name="titleColor">#263238</color>
     <color name="categoryColor">#455a46</color>
     <color name="articlesBackground">#ECEFF1</color>
+    <color name="white">#FFFFFF</color>
 </resources>

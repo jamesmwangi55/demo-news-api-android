@@ -18,5 +18,5 @@ public interface NewsApiEndpointInterface {
     Observable<List<Source>> getSources();
 
     @GET("articles")
-    Observable<List<Article>> getArticles(@Query("source_id") String source, @Query("sortBy") String sortBy);
+    Observable<List<Article>> getArticles(@Query("category") String category, @Query("source_id") String source);
 }

@@ -48,14 +48,15 @@ public class ArticlesPresenter implements ArticlesContract.Presenter {
 
     @Override
     public void start() {
-        initiliazeFirebaseAuth();
-        showArticles();
-    }
+        if(mView.isActive()){
+            initiliazeFirebaseAuth();
+        }
+}
 
     @Override
-    public void showArticles() {
+    public void showArticles(String source, String category) {
         mView.showProgress(true);
-        mArticlesRepository.getArticles(new ArticlesDataSource.LoadArticlesCallback() {
+        mArticlesRepository.getArticles(category, source, new ArticlesDataSource.LoadArticlesCallback() {
 
             @Override
             public void onArticlesLoaded(List<Article> articles) {

@@ -15,9 +15,12 @@ public interface SourcesContract{
         boolean isActive();
         void showSources(List<Source> sources);
         void showSourcesNotLoaded();
+        void showProgress(boolean show);
     }
 
     interface Presenter extends BasePresenter{
         void getSources();
+        void setFiltering(SourcesFilteringType requestType);
+        SourcesFilteringType getFiltering();
     }
 }

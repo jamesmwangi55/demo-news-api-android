@@ -22,4 +22,6 @@
 
     <dimen name="fab_margin">24dp</dimen>
 
+    <integer name="grid_items">5</integer>
+
 </resources>

@@ -12,5 +12,5 @@ import dagger.Component;
 @Component(dependencies = SourcesRepositoryComponent.class,
         modules = SourcesPresenterModule.class)
 public interface SourcesComponent {
-    void inject(SourcesActivity sourcesActivity);
+    void inject(SourcesFragment sourcesFragment);
 }

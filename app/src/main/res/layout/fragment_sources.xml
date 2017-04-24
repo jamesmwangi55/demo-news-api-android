@@ -2,18 +2,12 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:clipToPadding="false"
-             android:layout_marginTop="@dimen/medium"
-
              tools:context="com.demonews.demo_news_api_android.articles.ArticlesFragment">
 
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recylerView"
-        android:clipToPadding="false"
-        android:paddingLeft="@dimen/medium"
-        android:paddingRight="@dimen/medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
