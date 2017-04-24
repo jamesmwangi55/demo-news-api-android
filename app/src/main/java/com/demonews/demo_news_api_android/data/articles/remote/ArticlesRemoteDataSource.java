@@ -12,7 +12,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import retrofit2.Retrofit;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -44,7 +43,6 @@ public class ArticlesRemoteDataSource implements ArticlesDataSource {
         newsService.getArticles(null, "latest")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.<List<Article>>empty())
                 .subscribe(new Action1<List<Article>>() {
                                @Override
                                public void call(List<Article> articles) {

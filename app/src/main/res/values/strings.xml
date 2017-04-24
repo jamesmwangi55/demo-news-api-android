@@ -12,4 +12,7 @@
     <string name="unknown_error">Sign in failed. Unknown Error</string>
     <string name="unknown_sign_in_response">Sign in failed unkown response</string>
     <string name="load_sources_error">Sources loading failed</string>
+    <string name="sources_loading_failed">Sources loading failed</string>
+    <string name="action_articles">Articles</string>
+    <string name="artiles_loading_failed">Articles loading failed</string>
 </resources>

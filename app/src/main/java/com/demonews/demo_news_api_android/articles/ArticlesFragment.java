@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
     private static final int RC_SIGN_IN = 9001;
 
     @BindView(R.id.recylerView) RecyclerView mRecyclerView;
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     private ArticleAdapter mArticleAdapter;
 
     private Unbinder mUnbinder;
@@ -78,6 +80,7 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
         mUsername = ANONYMOUS;
 
 
@@ -110,7 +113,6 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: call on resume");
         mPresenter.start();
     }
 
@@ -118,8 +120,6 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
     public void setPresenter(@NonNull ArticlesContract.Presenter presenter) {
         mPresenter = checkNotNull(presenter);
     }
-
-
 
     @Override
     public boolean isActive() {
@@ -138,13 +138,16 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
     }
 
     @Override
+    public void showProgress(boolean show) {
+        mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
     public void setPhotoUrl(String url) {
         if(url != null){
             mPhotoUrl = url;
         }
     }
-
-
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -210,6 +213,11 @@ public class ArticlesFragment extends Fragment implements ArticlesContract.View,
             mArticleAdapter.replaceData(articles);
             mRecyclerView.setAdapter(mArticleAdapter);
         }
+    }
+
+    @Override
+    public void showArticlesNotLoaded() {
+        Toast.makeText(getActivity(), R.string.artiles_loading_failed, Toast.LENGTH_SHORT).show();
     }
 
     class ArticleHolder extends RecyclerView.ViewHolder{

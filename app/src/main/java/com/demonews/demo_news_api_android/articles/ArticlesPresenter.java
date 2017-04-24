@@ -31,8 +31,6 @@ public class ArticlesPresenter implements ArticlesContract.Presenter {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
 
-
-
     @Inject
     ArticlesPresenter(ArticlesContract.View view, Context context, ArticlesRepository articlesRepository){
         mView = view;
@@ -56,20 +54,25 @@ public class ArticlesPresenter implements ArticlesContract.Presenter {
 
     @Override
     public void showArticles() {
-
+        mView.showProgress(true);
         mArticlesRepository.getArticles(new ArticlesDataSource.LoadArticlesCallback() {
 
             @Override
             public void onArticlesLoaded(List<Article> articles) {
                 Log.i(TAG, "onArticlesLoaded: ");
-//                for (Article article: articles) {
-//                    Log.d(TAG, "onArticlesLoaded: " + article.getTitle());
-//                }
-                mView.showArticlesOnLoaded(articles);
+                mView.showProgress(false);
+                if(articles != null && !articles.isEmpty()){
+                    mView.showArticlesOnLoaded(articles);
+                } else {
+                    mView.showArticlesNotLoaded();
+                }
+
             }
 
             @Override
             public void onArticlesNotLoaded() {
+                mView.showProgress(false);
+                mView.showArticlesNotLoaded();
                 Log.d(TAG, "onArticlesNotLoaded: Articles not loaded");
             }
         });

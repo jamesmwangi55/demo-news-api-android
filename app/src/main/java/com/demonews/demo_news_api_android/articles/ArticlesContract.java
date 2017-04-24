@@ -16,6 +16,7 @@ public interface ArticlesContract {
         boolean isActive();
         void showAuthenticationActivity();
         void setUsername(String name);
+        void showProgress(boolean show);
         void setPhotoUrl(String url);
         void onSourcesLoaded(List<Source> sources);
         void onSourcesNotLoaded();
@@ -23,6 +24,8 @@ public interface ArticlesContract {
         void onArticlesNotLoaded();
 
         void showArticlesOnLoaded(List<Article> articles);
+
+        void showArticlesNotLoaded();
     }
 
     interface Presenter extends BasePresenter{

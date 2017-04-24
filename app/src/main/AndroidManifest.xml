@@ -16,7 +16,9 @@
             android:name=".auth.AuthenticationActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
-        <activity android:name=".articles.ArticlesActivity">
+        <activity android:name=".articles.ArticlesActivity"
+                  android:launchMode="singleTop"
+                  android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

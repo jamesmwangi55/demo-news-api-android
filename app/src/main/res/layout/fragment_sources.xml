@@ -2,12 +2,22 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.demonews.demo_news_api_android.sources.SourcesFragment">
+             android:clipToPadding="false"
+             android:layout_marginTop="@dimen/medium"
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+             tools:context="com.demonews.demo_news_api_android.articles.ArticlesFragment">
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recylerView"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/medium"
+        android:paddingRight="@dimen/medium"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:layout_height="wrap_content"/>
+
+    <include layout="@layout/progress_bar"
+        />
 
 </FrameLayout>
